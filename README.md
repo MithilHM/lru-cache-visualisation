@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 LRU Cache Visualizer
 
-## Getting Started
+An interactive Data Structures & Algorithms (DSA) demonstration tool for visualizing **Least Recently Used (LRU) Cache** operations. Built with **Next.js 14+**, **Framer Motion**, and **Tailwind CSS**.
 
-First, run the development server:
+![LRU Cache Visualization](https://img.shields.io/badge/DSA-Visualization-blueviolet)
+![Next.js](https://img.shields.io/badge/Next.js-14+-black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC)
 
+## ✨ Features
+
+- **O(1) Accuracy**: Implements the algorithm using a HashMap + Doubly Linked List.
+- **Real-time Visualization**: Watch nodes move from HEAD (MRU) to TAIL (LRU) with spring-physics animations.
+- **Interactive Controls**: Manually `put` and `get` items, adjust capacity, and trigger evictions.
+- **Statistics Dashboard**: Track Hit Rate, Misses, and Evictions in real-time.
+- **Glassmorphic UI**: High-end modern design with fluid transitions and responsive layouts.
+- **Operation Log**: A chronological timeline of all cache interactions with complexity analysis.
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14+ (App Router)
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Animations**: Framer Motion
+- **State Management**: Zustand
+- **Icons**: Lucide React
+
+## 🚀 Deployment
+
+The project is production-ready. I have verified the build locally.
+
+### Option 1: Vercel (Recommended)
+The easiest way to deploy is using the Vercel platform:
+1. Push your code to a GitHub repository.
+2. Go to [Vercel](https://vercel.com/new).
+3. Import your project and click **Deploy**.
+
+### Option 2: Generic Build
+To generate a production build locally:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+```
+The output will be in the `.next` folder. You can start the production server with:
+```bash
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💻 Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Start the dev server**:
+   ```bash
+   npm run dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ for DSA enthusiasts.
