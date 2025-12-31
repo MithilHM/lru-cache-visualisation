@@ -13,9 +13,20 @@ import {
   Cpu
 } from 'lucide-react';
 
+import DotGrid from '@/components/ui/DotGrid/DotGrid';
+
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-x-hidden">
+      {/* Background DotGrid */}
+      <div className="fixed inset-0 pointer-events-none -z-10 opacity-30">
+        <DotGrid
+          dotSize={21}
+          gap={10}
+          baseColor="#381f2a"
+          activeColor="#37ff29"
+        />
+      </div>
       {/* Navbar */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
