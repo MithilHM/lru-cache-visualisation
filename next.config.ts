@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: 'export',
   basePath: '/lru-cache-visualisation',
+  assetPrefix: '/lru-cache-visualisation',
   images: {
     unoptimized: true,
   },

@@ -22,133 +22,119 @@ export function CacheNode({
     return (
         <motion.div
             layout
-            initial={{ scale: 0, opacity: 0, y: -20 }}
+            initial={{ scale: 0.8, opacity: 0, y: 10 }}
             animate={{
                 scale: 1,
                 opacity: 1,
                 y: 0,
+                borderColor: isHighlighted ? nodeColor : '#e2e8f0',
                 boxShadow: isHighlighted
-                    ? `0 0 30px ${nodeColor}80`
-                    : `0 0 20px ${nodeColor}40`
+                    ? `0 0 0 4px ${nodeColor}10, 0 10px 15px -3px rgba(0,0,0,0.1)`
+                    : `0 4px 6px -1px rgba(0,0,0,0.05)`
             }}
             exit={{
-                scale: 0,
+                scale: 0.8,
                 opacity: 0,
-                x: 50,
-                transition: { duration: 0.3 }
+                x: 20,
+                transition: { duration: 0.2 }
             }}
             transition={{
                 type: 'spring',
-                stiffness: 300,
-                damping: 25,
+                stiffness: 400,
+                damping: 30,
                 delay: animationDelay,
             }}
             whileHover={{
-                scale: 1.05,
-                rotateY: 5,
+                y: -4,
+                boxShadow: `0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)`,
                 transition: { duration: 0.2 }
             }}
-            className="relative"
+            className="relative bg-white border-2 rounded-xl p-0 min-w-[120px] overflow-hidden group cursor-pointer"
         >
-            {/* Gradient Border Wrapper */}
+            {/* Semantic Header Stripe */}
             <div
-                className="p-[2px] rounded-xl"
-                style={{
-                    background: `linear-gradient(135deg, ${nodeColor}, ${nodeColor}80)`,
-                }}
-            >
-                {/* Main Card */}
-                <div className="glass-strong rounded-xl p-4 min-w-[100px]">
-                    {/* Position Badge */}
-                    <div
-                        className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                        style={{ backgroundColor: nodeColor }}
+                className="h-1.5 w-full"
+                style={{ backgroundColor: nodeColor }}
+            />
+
+            <div className="p-4">
+                {/* ID Badge */}
+                <div className="flex items-center justify-between mb-3">
+                    <span
+                        className="text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter"
+                        style={{ color: nodeColor, backgroundColor: `${nodeColor}10` }}
                     >
-                        {node.position + 1}
-                    </div>
-
-                    {/* Key */}
-                    <div className="text-center mb-2">
-                        <span className="text-xs text-muted-foreground uppercase tracking-wider">Key</span>
-                        <div
-                            className="text-2xl font-bold font-mono"
-                            style={{ color: nodeColor }}
-                        >
-                            {node.key}
-                        </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div
-                        className="h-px w-full my-2"
-                        style={{ backgroundColor: `${nodeColor}40` }}
-                    />
-
-                    {/* Value */}
-                    <div className="text-center">
-                        <span className="text-xs text-muted-foreground uppercase tracking-wider">Value</span>
-                        <div className="text-lg font-semibold text-foreground">
-                            {node.value}
-                        </div>
-                    </div>
-
-                    {/* Status Indicators */}
-                    <div className="flex gap-1 mt-3 justify-center">
+                        POS {node.position + 1}
+                    </span>
+                    <div className="flex gap-1">
                         {node.isHead && (
-                            <motion.span
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/20 text-emerald-400 font-medium"
-                            >
-                                MRU
-                            </motion.span>
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                         )}
                         {node.isTail && (
-                            <motion.span
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="px-2 py-0.5 text-[10px] rounded-full bg-red-500/20 text-red-400 font-medium"
-                            >
-                                LRU
-                            </motion.span>
+                            <div className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
                         )}
                     </div>
+                </div>
+
+                {/* Data Section */}
+                <div className="space-y-3">
+                    <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Index Key</span>
+                        <span className="text-xl font-black text-slate-900 font-mono tracking-tighter">
+                            {node.key}
+                        </span>
+                    </div>
+
+                    <div className="h-px w-full bg-slate-100" />
+
+                    <div className="flex flex-col">
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Payload</span>
+                        <span className="text-sm font-bold text-slate-600 font-mono italic">
+                            {node.value}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Indicators Sidebar (Vertical Label) */}
+                <div className="absolute top-10 -right-7 rotate-90 origin-left flex gap-2">
+                    {node.isHead && (
+                        <span className="text-[8px] font-black text-emerald-600/40 uppercase tracking-[0.2em]">Primary</span>
+                    )}
+                    {node.isTail && (
+                        <span className="text-[8px] font-black text-rose-600/40 uppercase tracking-[0.2em]">Terminal</span>
+                    )}
                 </div>
             </div>
         </motion.div>
     );
 }
 
-// Arrow component for linking nodes
-export function NodeArrow({ color = '#6366f1' }: { color?: string }) {
+// Arrow component for linking nodes - Doubly Linked List Version
+export function NodeArrow({ color = '#cbd5e1' }: { color?: string }) {
     return (
         <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            className="flex items-center mx-1"
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: 48 }}
+            className="flex items-center justify-center -mx-1"
         >
-            <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-                {/* Line */}
-                <motion.line
-                    x1="0" y1="12" x2="32" y2="12"
-                    stroke={color}
-                    strokeWidth="2"
-                    strokeDasharray="4 2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5 }}
-                />
-                {/* Arrow head */}
-                <motion.path
-                    d="M32 12L26 6M32 12L26 18"
-                    stroke={color}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                />
-            </svg>
+            <div className="flex flex-col gap-1.5 w-full">
+                {/* Forward Arrow (Next) */}
+                <div className="relative flex items-center w-full">
+                    <div className="h-[1.5px] w-full rounded-full" style={{ backgroundColor: color }} />
+                    <div
+                        className="absolute right-0 w-1.5 h-1.5 rotate-45 border-t-1.5 border-r-1.5"
+                        style={{ borderColor: color, borderTopWidth: '1.5px', borderRightWidth: '1.5px' }}
+                    />
+                </div>
+                {/* Backward Arrow (Prev) */}
+                <div className="relative flex items-center w-full">
+                    <div className="h-[1.5px] w-full rounded-full" style={{ backgroundColor: color }} />
+                    <div
+                        className="absolute left-0 w-1.5 h-1.5 rotate-[225deg] border-t-1.5 border-r-1.5"
+                        style={{ borderColor: color, borderTopWidth: '1.5px', borderRightWidth: '1.5px' }}
+                    />
+                </div>
+            </div>
         </motion.div>
     );
 }

@@ -1,150 +1,155 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LinkedListView } from '@/components/cache/LinkedListView';
-import { HashMapView } from '@/components/cache/HashMapView';
-import { ControlPanel } from '@/components/controls/ControlPanel';
+import { useCacheStore } from '@/store/cache-store';
 import { StatsPanel } from '@/components/stats/StatsPanel';
 import { OperationLog } from '@/components/stats/OperationLog';
+import { ControlPanel } from '@/components/controls/ControlPanel';
+import { LinkedListView } from '@/components/cache/LinkedListView';
+import { ComparisonView } from '@/components/cache/ComparisonView';
+import { PointerInspectorView } from '@/components/cache/PointerInspectorView';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Database,
+  LayoutDashboard,
+  ArrowLeftRight,
+  GitBranch,
+  Settings,
+  ShieldCheck,
+  Cpu,
   Github,
-  Info,
-  Cpu
+  Globe
 } from 'lucide-react';
-
 import DotGrid from '@/components/ui/DotGrid/DotGrid';
+import { RealWorldSimulationView } from '@/components/cache/RealWorldSimulationView';
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState('visualizer');
+
   return (
-    <div className="min-h-screen relative overflow-x-hidden">
-      {/* Background DotGrid */}
-      <div className="fixed inset-0 pointer-events-none -z-10 opacity-30">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-700">
+      {/* Subtle background texture */}
+      <div className="fixed inset-0 pointer-events-none -z-10 opacity-[0.03]">
         <DotGrid
-          dotSize={21}
-          gap={10}
-          baseColor="#381f2a"
-          activeColor="#37ff29"
+          dotSize={20}
+          gap={12}
+          baseColor="#0f172a"
+          activeColor="#2563eb"
         />
       </div>
-      {/* Navbar */}
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-strong sticky top-0 z-50 border-b border-border/50"
-      >
-        <div className="max-w-[1800px] mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-secondary">
-                <Cpu className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  LRU Cache Visualizer
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  Interactive Data Structure Lab
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-3">
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg hover:bg-background/50 transition-colors text-muted-foreground hover:text-foreground"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <button className="p-2 rounded-lg hover:bg-background/50 transition-colors text-muted-foreground hover:text-foreground">
-                <Info className="w-5 h-5" />
-              </button>
+      {/* Modern B2B SaaS Header */}
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200/60">
+        <div className="max-w-[1600px] mx-auto px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200 group cursor-pointer transition-transform hover:scale-105 active:scale-95">
+              <Cpu className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-black text-slate-900 tracking-tight leading-none mb-0.5">Algoverse <span className="text-blue-600">Pro</span></h1>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enterprise Visualizer v2.0</span>
+              </div>
             </div>
           </div>
+          <div className="flex items-center gap-3">
+            <a href="https://github.com" className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-400 hover:text-slate-900 transition-all">
+              <Github className="w-4 h-4" />
+            </a>
+          </div>
         </div>
-      </motion.nav>
+      </header>
 
-      {/* Main Content */}
-      <main className="max-w-[1800px] mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel - Controls */}
-          <motion.aside
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-3"
-          >
-            <div className="sticky top-24">
-              <ControlPanel />
-            </div>
-          </motion.aside>
+      <main className="max-w-[1600px] mx-auto px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-          {/* Center Panel - Visualization */}
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-6 space-y-6"
-          >
-            {/* Linked List */}
-            <LinkedListView />
-
-            {/* Hash Map */}
-            <HashMapView />
-
-            {/* Algorithm Info */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="glass rounded-xl p-4"
+          {/* Main Content Area - Tabbed Interface */}
+          <section className={(activeTab === 'comparison' || activeTab === 'pointer' || activeTab === 'realworld') ? 'lg:col-span-12' : 'lg:col-span-9 lg:order-2'}>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
             >
-              <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Database className="w-4 h-4 text-primary" />
-                Algorithm Complexity
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div className="p-3 rounded-lg bg-background/50">
-                  <div className="text-xl font-bold text-emerald-400 font-mono">O(1)</div>
-                  <div className="text-xs text-muted-foreground">Get</div>
-                </div>
-                <div className="p-3 rounded-lg bg-background/50">
-                  <div className="text-xl font-bold text-emerald-400 font-mono">O(1)</div>
-                  <div className="text-xs text-muted-foreground">Put</div>
-                </div>
-                <div className="p-3 rounded-lg bg-background/50">
-                  <div className="text-xl font-bold text-primary font-mono">O(n)</div>
-                  <div className="text-xs text-muted-foreground">Space</div>
-                </div>
-                <div className="p-3 rounded-lg bg-background/50">
-                  <div className="text-xl font-bold text-amber-400 font-mono">HashMap</div>
-                  <div className="text-xs text-muted-foreground">+ DLL</div>
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/60">
+                <TabsList className="bg-slate-100 p-1 border border-slate-200/60">
+                  <TabsTrigger value="visualizer" className="gap-2 px-6 py-2 rounded-md transition-all">
+                    <LayoutDashboard className="w-4 h-4" />
+                    Visualizer
+                  </TabsTrigger>
+                  <TabsTrigger value="comparison" className="gap-2 px-6 py-2 rounded-md transition-all">
+                    <ArrowLeftRight className="w-4 h-4" />
+                    Algorithm Comparison
+                  </TabsTrigger>
+                  <TabsTrigger value="pointer" className="gap-2 px-6 py-2 rounded-md transition-all">
+                    <GitBranch className="w-4 h-4" />
+                    Pointer Inspector
+                  </TabsTrigger>
+                  <TabsTrigger value="realworld" className="gap-2 px-6 py-2 rounded-md transition-all">
+                    <Globe className="w-4 h-4" />
+                    Real-World App
+                  </TabsTrigger>
+                </TabsList>
+
+                <div className="hidden sm:flex items-center gap-4">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tighter">System Nominal</span>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          </motion.section>
 
-          {/* Right Panel - Stats & Logs */}
-          <motion.aside
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="lg:col-span-3 space-y-6"
-          >
-            <StatsPanel />
-            <OperationLog />
-          </motion.aside>
+              <TabsContent value="visualizer" className="mt-0 focus-visible:outline-none">
+                <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                  <div className="xl:col-span-3 space-y-8">
+                    <LinkedListView />
+                    <OperationLog />
+                  </div>
+                  <div className="xl:col-span-1 space-y-8">
+                    <StatsPanel />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="comparison" className="mt-0 focus-visible:outline-none">
+                <ComparisonView />
+              </TabsContent>
+
+              <TabsContent value="pointer" className="mt-0 focus-visible:outline-none">
+                <PointerInspectorView />
+              </TabsContent>
+
+              <TabsContent value="realworld" className="mt-0 focus-visible:outline-none">
+                <RealWorldSimulationView />
+              </TabsContent>
+            </Tabs>
+          </section>
+
+          {/* Sidebar - Conditional rendering based on tab */}
+          {activeTab === 'visualizer' && (
+            <motion.aside
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-3 lg:order-1 space-y-6 lg:sticky lg:top-24"
+            >
+              <div className="flex items-center gap-2 px-1 mb-2">
+                <Settings className="w-4 h-4 text-slate-400" />
+                <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Operation Core</h2>
+              </div>
+              <ControlPanel />
+            </motion.aside>
+          )}
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-8">
-        <div className="max-w-[1800px] mx-auto px-6 py-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            Built for DSA Lab • LRU Cache with HashMap + Doubly Linked List
-          </p>
+      <footer className="border-t border-slate-200 mt-20 bg-white">
+        <div className="max-w-[1600px] mx-auto px-8 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3">
+            <Cpu className="w-5 h-5 text-slate-400" />
+            <p className="text-sm font-bold text-slate-500">
+              © 2026 Algoverse Systems • Secure DSA Engineering
+            </p>
+          </div>
         </div>
       </footer>
     </div>

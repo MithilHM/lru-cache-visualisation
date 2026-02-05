@@ -11,7 +11,8 @@ import {
     ArrowUpFromLine,
     Trash2,
     CheckCircle2,
-    XCircle
+    XCircle,
+    Terminal
 } from 'lucide-react';
 
 export function OperationLog() {
@@ -31,108 +32,109 @@ export function OperationLog() {
     };
 
     const getOperationColor = (type: string, isHit: boolean) => {
-        if (type === 'evict') return 'text-red-400 bg-red-500/20';
-        if (type === 'get' && !isHit) return 'text-amber-400 bg-amber-500/20';
-        if (type === 'get' && isHit) return 'text-emerald-400 bg-emerald-500/20';
-        return 'text-primary bg-primary/20';
+        if (type === 'evict') return 'text-rose-600 bg-rose-50 border-rose-100';
+        if (type === 'get' && !isHit) return 'text-amber-600 bg-amber-50 border-amber-100';
+        if (type === 'get' && isHit) return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+        return 'text-blue-600 bg-blue-50 border-blue-100';
     };
 
     return (
         <div className="h-full flex flex-col">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-secondary/20">
-                    <History className="w-5 h-5 text-secondary" />
+            <div className="flex items-center gap-3 px-1 mb-4">
+                <div className="p-2 rounded-lg bg-slate-100 border border-slate-200">
+                    <Terminal className="w-4 h-4 text-slate-600" />
                 </div>
-                <div>
-                    <h2 className="text-lg font-semibold text-foreground">Operation Log</h2>
-                    <p className="text-sm text-muted-foreground">
-                        {operations.length} operations
-                    </p>
-                </div>
+                <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Transaction Log</h2>
             </div>
 
             {/* Log List */}
-            <div className="glass rounded-xl flex-1 overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl flex-1 overflow-hidden shadow-sm">
                 {operations.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full py-8 text-muted-foreground">
-                        <History className="w-10 h-10 mb-2 opacity-50" />
-                        <p className="text-sm">No operations yet</p>
+                    <div className="flex flex-col items-center justify-center h-full py-20 text-slate-400">
+                        <div className="p-4 rounded-full bg-slate-50 mb-4 opacity-50">
+                            <History className="w-8 h-8" />
+                        </div>
+                        <p className="text-xs font-bold uppercase tracking-widest">No Active Logs</p>
                     </div>
                 ) : (
-                    <ScrollArea className="h-[300px]">
-                        <div className="p-3 space-y-2">
+                    <ScrollArea className="h-[350px]">
+                        <div className="p-3 space-y-1">
                             <AnimatePresence mode="popLayout">
                                 {[...operations].reverse().map((op, index) => (
                                     <motion.div
                                         key={op.id}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: 20 }}
+                                        initial={{ opacity: 0, scale: 0.98 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.98 }}
                                         transition={{ delay: index * 0.02 }}
-                                        className="flex items-start gap-3 p-2 rounded-lg bg-background/30 hover:bg-background/50 transition-colors"
+                                        className="flex items-start gap-3 p-2.5 rounded-lg border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-all group"
                                     >
-                                        {/* Time */}
-                                        <span className="text-[10px] font-mono text-muted-foreground whitespace-nowrap mt-1">
-                                            {formatTime(new Date(op.timestamp))}
-                                        </span>
-
                                         {/* Operation Badge */}
                                         <Badge
                                             variant="outline"
-                                            className={`text-[10px] px-2 py-0 ${getOperationColor(op.type, op.isHit)}`}
+                                            className={`text-[9px] font-black px-1.5 py-0 rounded border leading-none h-5 shrink-0 ${getOperationColor(op.type, op.isHit)}`}
                                         >
-                                            {getOperationIcon(op.type)}
-                                            <span className="ml-1 uppercase">{op.type}</span>
+                                            <span className="uppercase">{op.type}</span>
                                         </Badge>
 
                                         {/* Details */}
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-mono text-sm">
+                                            <div className="font-mono text-xs leading-5">
                                                 {op.type === 'put' && (
-                                                    <span>
-                                                        <span className="text-primary">put</span>
-                                                        <span className="text-muted-foreground">(</span>
-                                                        <span className="text-foreground">{op.key}</span>
-                                                        <span className="text-muted-foreground">, </span>
-                                                        <span className="text-secondary">{op.value}</span>
-                                                        <span className="text-muted-foreground">)</span>
+                                                    <span className="text-slate-600">
+                                                        <span className="text-blue-600 font-bold">PUT</span>
+                                                        <span className="text-slate-300"> :: </span>
+                                                        <span className="px-1 py-0.5 bg-slate-100 rounded text-slate-900 mx-1">{op.key}</span>
+                                                        <span className="text-slate-300">→</span>
+                                                        <span className="px-1 py-0.5 bg-blue-50 text-blue-700 rounded mx-1">{op.value}</span>
                                                     </span>
                                                 )}
                                                 {op.type === 'get' && (
-                                                    <span>
-                                                        <span className="text-secondary">get</span>
-                                                        <span className="text-muted-foreground">(</span>
-                                                        <span className="text-foreground">{op.key}</span>
-                                                        <span className="text-muted-foreground">)</span>
-                                                        <span className="text-muted-foreground"> → </span>
-                                                        <span className={op.isHit ? 'text-emerald-400' : 'text-red-400'}>
-                                                            {op.result}
+                                                    <span className="text-slate-600">
+                                                        <span className="text-indigo-600 font-bold">GET</span>
+                                                        <span className="text-slate-300"> :: </span>
+                                                        <span className="px-1 py-0.5 bg-slate-100 rounded text-slate-900 mx-1">{op.key}</span>
+                                                        <span className="text-slate-300">⇒</span>
+                                                        <span className={`px-1.5 py-0.5 rounded ml-1 font-bold ${op.isHit ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                                                            {op.result === -1 ? 'NULL' : op.result}
                                                         </span>
                                                     </span>
                                                 )}
                                                 {op.type === 'evict' && (
-                                                    <span className="text-red-400">
-                                                        Evicted key {op.key}
+                                                    <span className="text-rose-600 font-bold">
+                                                        PURGE KEY {op.key}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            {/* Eviction info for put */}
-                                            {op.evictedKey !== undefined && (
-                                                <div className="text-[10px] text-red-400 mt-0.5">
-                                                    ⚠️ Evicted: key={op.evictedKey}, value={op.evictedValue}
-                                                </div>
-                                            )}
+                                            {/* Details Metadata */}
+                                            <div className="flex items-center gap-4 mt-1">
+                                                <span className="text-[9px] font-bold text-slate-300 font-mono">
+                                                    {formatTime(new Date(op.timestamp))}
+                                                </span>
+                                                {op.evictedKey !== undefined && (
+                                                    <div className="text-[9px] font-black text-rose-500 uppercase flex items-center gap-1">
+                                                        <Trash2 className="w-2.5 h-2.5" />
+                                                        EVICTED {op.evictedKey}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* Hit/Miss indicator */}
+                                        {/* Outcome Indicator */}
                                         {op.type === 'get' && (
-                                            <div className="flex-shrink-0">
+                                            <div className="flex-shrink-0 pt-0.5">
                                                 {op.isHit ? (
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 shadow-sm shadow-emerald-50">
+                                                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />
+                                                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-tighter">HIT</span>
+                                                    </div>
                                                 ) : (
-                                                    <XCircle className="w-4 h-4 text-red-400" />
+                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-rose-50 border border-rose-100 shadow-sm shadow-rose-50">
+                                                        <XCircle className="w-2.5 h-2.5 text-rose-600" />
+                                                        <span className="text-[8px] font-black text-rose-600 uppercase tracking-tighter">MISS</span>
+                                                    </div>
                                                 )}
                                             </div>
                                         )}

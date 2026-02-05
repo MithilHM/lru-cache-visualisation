@@ -1,4 +1,5 @@
 import { CacheNode, CacheState, VisualNode, Operation, AnimationStep, StatsData } from '@/types/cache.types';
+import { getMemoryAddress } from './utils';
 
 /**
  * LRU Cache Implementation using HashMap + Doubly Linked List
@@ -132,9 +133,10 @@ export class LRUCache {
         while (current && current !== this.tail) {
             const isHead = position === 0;
             const isTail = current.next === this.tail;
+            const nodeId = this.getNodeId(current);
 
             nodes.push({
-                id: this.getNodeId(current),
+                id: nodeId,
                 key: current.key,
                 value: current.value,
                 position,
@@ -143,6 +145,9 @@ export class LRUCache {
                 isNew: false,
                 isAccessed: false,
                 isEvicting: false,
+                address: getMemoryAddress(nodeId),
+                prevAddress: current.prev ? getMemoryAddress(this.nodeIdMap.get(current.prev) || 'dummy-head') : undefined,
+                nextAddress: current.next ? getMemoryAddress(this.nodeIdMap.get(current.next) || 'dummy-tail') : undefined,
             });
 
             current = current.next;

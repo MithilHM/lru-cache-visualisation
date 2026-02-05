@@ -44,15 +44,29 @@ export function getNodeColorClass(position: number, total: number): string {
 }
 
 /**
- * Get color for node based on position (for gradients)
+ * Get color for node based on position
  */
 export function getNodeColor(position: number, total: number): string {
-  if (total <= 1) return '#10b981'; // emerald
+  if (total <= 1) return '#10b981'; // emerald-500
 
   const ratio = position / (total - 1);
-  if (ratio <= 0.33) return '#10b981'; // emerald
-  if (ratio <= 0.66) return '#f59e0b'; // amber
-  return '#ef4444'; // red
+  if (ratio <= 0.33) return '#10b981'; // emerald-500
+  if (ratio <= 0.66) return '#f59e0b'; // amber-500
+  return '#f43f5e'; // rose-500 (B2B SaaS compatible red)
+}
+
+/**
+ * Generate a mock memory address for a given ID
+ */
+export function getMemoryAddress(id: string): string {
+  // Use a simple hash to keep addresses consistent for the same ID
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash |= 0;
+  }
+  const hex = Math.abs(hash).toString(16).padStart(4, '0').toUpperCase();
+  return `0x${hex}`;
 }
 
 /**
@@ -112,13 +126,47 @@ export const presetSequences = [
     ],
   },
   {
-    id: 'stress',
-    name: 'Stress Test',
-    description: 'Many rapid operations',
-    operations: Array.from({ length: 15 }, (_, i) => ({
-      type: (i % 3 === 0 ? 'get' : 'put') as 'get' | 'put',
-      key: randomInt(1, 8),
-      value: randomInt(100, 999),
-    })),
+    id: 'lru_superiority',
+    name: 'LRU Efficiency Demo',
+    description: 'A sequence where temporal locality makes LRU outperform FIFO',
+    operations: [
+      { type: 'put' as const, key: 1, value: 100 },
+      { type: 'put' as const, key: 2, value: 200 },
+      { type: 'put' as const, key: 3, value: 300 },
+      { type: 'put' as const, key: 4, value: 400 },
+      { type: 'put' as const, key: 5, value: 500 }, // Full capacity (5)
+      { type: 'get' as const, key: 1 }, // LRU moves 1 to head, FIFO keeps it at front
+      { type: 'put' as const, key: 6, value: 600 }, // Eviction: LRU evicts 2, FIFO evicts 1 (the oldest)
+      { type: 'get' as const, key: 1 }, // HIT in LRU, MISS in FIFO
+      { type: 'get' as const, key: 1 }, // Another HIT in LRU
+      { type: 'put' as const, key: 7, value: 700 }, // LRU evicts 3, FIFO evicts 2
+      { type: 'get' as const, key: 1 }, // Persistent HIT in LRU
+    ],
+  },
+  {
+    id: 'browser_cache',
+    name: 'Web Browser Asset Cache',
+    description: 'Simulating how a browser caches images and scripts to speed up navigation',
+    operations: [
+      { type: 'put' as const, key: 101, value: 1200, label: 'hero-banner.jpg', category: 'image' },
+      { type: 'put' as const, key: 102, value: 450, label: 'main-style.css', category: 'style' },
+      { type: 'put' as const, key: 103, value: 800, label: 'app-logic.js', category: 'script' },
+      { type: 'put' as const, key: 104, value: 300, label: 'logo-vector.svg', category: 'image' },
+      { type: 'put' as const, key: 105, value: 1500, label: 'user-gallery-1.png', category: 'image' }, // Capacity (5)
+      { type: 'get' as const, key: 101, label: 'hero-banner.jpg' }, // Users navigates back to Home (HIT)
+      { type: 'put' as const, key: 106, value: 2200, label: 'heavy-video-intro.mp4', category: 'video' }, // Evicts 102
+      { type: 'get' as const, key: 103, label: 'app-logic.js' }, // Script reused (HIT)
+      { type: 'put' as const, key: 107, value: 600, label: 'nav-icons.woff2', category: 'font' }, // Evicts 104
+      { type: 'get' as const, key: 101, label: 'hero-banner.jpg' }, // Navigates Home again (HIT)
+    ],
   },
 ];
+
+export const assetIcons: Record<string, string> = {
+  image: '🖼️',
+  style: '🎨',
+  script: '📜',
+  video: '🎥',
+  font: '🗚',
+  other: '📦'
+};

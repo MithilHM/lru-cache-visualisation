@@ -17,6 +17,12 @@ export interface VisualNode {
   isNew: boolean;
   isAccessed: boolean;
   isEvicting: boolean;
+  // Memory addresses for Pointer Inspector
+  address?: string;
+  prevAddress?: string;
+  nextAddress?: string;
+  label?: string;
+  category?: string;
 }
 
 // Cache state snapshot for visualization
@@ -41,6 +47,8 @@ export interface Operation {
   isHit: boolean;
   evictedKey?: number;
   evictedValue?: number;
+  label?: string;
+  category?: string;
 }
 
 // Animation step for step-by-step visualization
@@ -77,7 +85,13 @@ export interface PresetSequence {
   id: string;
   name: string;
   description: string;
-  operations: { type: 'get' | 'put'; key: number; value?: number }[];
+  operations: {
+    type: 'get' | 'put';
+    key: number;
+    value?: number;
+    label?: string;
+    category?: string;
+  }[];
 }
 
 // Store state
@@ -85,30 +99,34 @@ export interface CacheStore {
   // Cache state
   cacheState: CacheState;
   capacity: number;
-  
+
   // Statistics
   stats: StatsData;
-  
+
   // Operation history
   operations: Operation[];
-  
+
   // Playback
   playback: PlaybackState;
   animationQueue: AnimationStep[];
-  
+
+  // Comparison Mode
+  fifoState: CacheState;
+  fifoStats: StatsData;
+
   // Actions
   get: (key: number) => number;
   put: (key: number, value: number) => void;
   setCapacity: (capacity: number) => void;
   reset: () => void;
   clearHistory: () => void;
-  
+
   // Playback actions
   togglePlayback: () => void;
   setSpeed: (speed: number) => void;
   stepForward: () => void;
   stepBackward: () => void;
-  
+
   // Export/Import
   exportState: () => string;
   importState: (json: string) => void;
