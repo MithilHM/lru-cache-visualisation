@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: '/lru-cache-visualisation',
-  assetPrefix: '/lru-cache-visualisation',
+  basePath: isProd ? '/lru-cache-visualisation' : '',
+  assetPrefix: isProd ? '/lru-cache-visualisation' : '',
   images: {
     unoptimized: true,
   },

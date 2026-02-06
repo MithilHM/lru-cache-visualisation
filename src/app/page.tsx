@@ -8,12 +8,12 @@ import { OperationLog } from '@/components/stats/OperationLog';
 import { ControlPanel } from '@/components/controls/ControlPanel';
 import { LinkedListView } from '@/components/cache/LinkedListView';
 import { ComparisonView } from '@/components/cache/ComparisonView';
-import { PointerInspectorView } from '@/components/cache/PointerInspectorView';
+import { AlternateArchitecturesView } from '@/components/cache/AlternateArchitecturesView';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LayoutDashboard,
   ArrowLeftRight,
-  GitBranch,
+  Layers,
   Settings,
   ShieldCheck,
   Cpu,
@@ -65,7 +65,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
           {/* Main Content Area - Tabbed Interface */}
-          <section className={(activeTab === 'comparison' || activeTab === 'pointer' || activeTab === 'realworld') ? 'lg:col-span-12' : 'lg:col-span-9 lg:order-2'}>
+          <section className={(activeTab === 'comparison' || activeTab === 'alternates' || activeTab === 'realworld') ? 'lg:col-span-12' : 'lg:col-span-9 lg:order-2'}>
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
@@ -81,9 +81,9 @@ export default function Home() {
                     <ArrowLeftRight className="w-4 h-4" />
                     Algorithm Comparison
                   </TabsTrigger>
-                  <TabsTrigger value="pointer" className="gap-2 px-6 py-2 rounded-md transition-all">
-                    <GitBranch className="w-4 h-4" />
-                    Pointer Inspector
+                  <TabsTrigger value="alternates" className="gap-2 px-6 py-2 rounded-md transition-all">
+                    <Layers className="w-4 h-4" />
+                    Alternate Architectures
                   </TabsTrigger>
                   <TabsTrigger value="realworld" className="gap-2 px-6 py-2 rounded-md transition-all">
                     <Globe className="w-4 h-4" />
@@ -115,8 +115,8 @@ export default function Home() {
                 <ComparisonView />
               </TabsContent>
 
-              <TabsContent value="pointer" className="mt-0 focus-visible:outline-none">
-                <PointerInspectorView />
+              <TabsContent value="alternates" className="mt-0 focus-visible:outline-none">
+                <AlternateArchitecturesView />
               </TabsContent>
 
               <TabsContent value="realworld" className="mt-0 focus-visible:outline-none">
